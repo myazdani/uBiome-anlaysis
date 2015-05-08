@@ -23,6 +23,6 @@ for (i in c(1:length(excel.files))){
   data.files[[i]] = temp.df
 }
 
-res = join_all(data.files, match = "all")
+res = join_all(data.files, type = "full", match = "all")
 
 write.csv(res, file = "./processedData/species-data.csv", row.names = FALSE, quote = FALSE)
