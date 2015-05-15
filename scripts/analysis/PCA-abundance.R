@@ -60,35 +60,16 @@ pca.m = melt(pca.df[,c("PC1", "PC2", "PC3","sample.date")], id = "sample.date")
 ggplot(pca.m, aes(x = sample.date, y = value)) + geom_point() + 
   facet_wrap(~variable, nrow = 3, scales = "free_y") + stat_smooth() -> p
 
-
+#py$ggplotly(p, kwargs=list(filename="LS-ubiome-time-vs-PC1-species", fileopt="overwrite"))
 ##-----------------------------------------------------
-## Plot heatmap of PC's
+## Plot loadings of first three PCs
 ##-----------------------------------------------------
 
-myData <- pca.result$rotation
+pca.loadings = as.data.frame(pca.result$rotation[,c(1:3)])
+pca.loadings$bug = rownames(pca.loadings)
 
-# Replace with numbers that actually have a relationship:
-for(ii in 2:ncol(myData)){  myData[, ii] <- myData[, ii-1] + rnorm(nrow(myData))  }
-for(ii in 2:nrow(myData)){  myData[ii, ] <- myData[ii-1, ] + rnorm(ncol(myData))  }
+pca.loadings.m = melt(pca.loadings, id = "bug")
+ggplot(pca.loadings.m, aes(x = bug, y = value)) + geom_point() +  
+  facet_wrap(~variable, nrow = 1, scales = "free_y")  + xlab("") + scale_x_discrete(breaks=NULL)-> p 
 
-# For melt() to work seamlessly, myData has to be a matrix.
-longData <- melt(myData)
-head(longData, 20)
-
-# Optionally, reorder both the row and column variables in any order
-# Here, they are sorted by mean value
-longData$X1 <- factor(longData$X1, names(sort(with(longData, by(value, X1, mean)))))
-longData$X2 <- factor(longData$X2, names(sort(with(longData, by(value, X2, mean)))))
-
-# Define palette
-myPalette <- colorRampPalette(rev(brewer.pal(11, "Spectral")), space="Lab")
-
-zp1 <- ggplot(longData,
-              aes(x = X2, y = X1, fill = value))
-zp1 <- zp1 + geom_tile()
-zp1 <- zp1 + scale_fill_gradientn(colours = myPalette(100))
-zp1 <- zp1 + scale_x_discrete(expand = c(0, 0))
-zp1 <- zp1 + scale_y_discrete(expand = c(0, 0))
-zp1 <- zp1 + coord_equal()
-zp1 <- zp1 + theme_bw()
-print(zp1)
+#py$ggplotly(p, kwargs=list(filename="LS-ubiome-species-PCA-loadings", fileopt="overwrite"))
