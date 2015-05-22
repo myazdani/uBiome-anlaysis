@@ -38,6 +38,8 @@ date.pairs = as.data.frame(pairwise.abs.diff(dates.in.unix))
 names(date.pairs) = "date.difference"
 date.pairs$row.key = row.names(date.pairs)
 
-df.res = merge(date.pairs, df.pairs)
+date.pairs$date.diff = sapply(date.pairs$row.key, FUN = function(x) paste(df$date[as.numeric(strsplit(x, split = "-")[[1]][1])], "-", df$date[as.numeric(strsplit(x, split = "-")[[1]][2])]))
 
+df.res = merge(date.pairs, df.pairs)
+df.res$row.key = NULL
 write.csv(df.res, file = "./processedData/pairwise-differences/genus-pairwise-time-diff.csv", row.names = FALSE, quote = FALSE)
