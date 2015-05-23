@@ -8,6 +8,17 @@ df = read.csv("./processedData/merged-excel-sheets/transposed/genus-data-TRANSPO
 
 df[is.na(df)] = 0
 
+##
+##!!!!---data clean up
+##
+## remove low abundant data
+filter_thresh = 1e-4
+max.bugs = sapply(df[,-ncol(df)], max)
+df = df[,-which(max.bugs < filter_thresh)]
+##
+##!!!!
+##
+
 #change to a date data type
 df$date = as.Date(df$date, format='%m.%d.%Y')
 
@@ -42,4 +53,8 @@ date.pairs$date.diff = sapply(date.pairs$row.key, FUN = function(x) paste(df$dat
 
 df.res = merge(date.pairs, df.pairs)
 df.res$row.key = NULL
-write.csv(df.res, file = "./processedData/pairwise-differences/genus-pairwise-time-diff.csv", row.names = FALSE, quote = FALSE)
+write.csv(df.res, file = "./processedData/pairwise-differences/genus-pairwise-time-diff-high-abundant.csv", row.names = FALSE, quote = FALSE)
+
+df.res[,-c(1,2)] = df.res[,-c(1,2)]/df.res[,1]
+
+write.csv(df.res, file = "./processedData/pairwise-differences/genus-pairwise-DERIVATIVE-high-abundant.csv", row.names = FALSE, quote = FALSE)
