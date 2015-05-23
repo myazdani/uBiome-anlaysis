@@ -53,8 +53,11 @@ date.pairs$date.diff = sapply(date.pairs$row.key, FUN = function(x) paste(df$dat
 
 df.res = merge(date.pairs, df.pairs)
 df.res$row.key = NULL
+df.res$mag.dist = apply(df.res[,-c(1,2)], 1, sum)
+df.res = df.res[,c("date.difference", "mag.dist", "date.diff",names(df.res[,-c(1,2,ncol(df.res))]))]
+
 write.csv(df.res, file = "./processedData/pairwise-differences/genus-pairwise-time-diff-high-abundant.csv", row.names = FALSE, quote = FALSE)
 
-df.res[,-c(1,2)] = df.res[,-c(1,2)]/df.res[,1]
+df.res[,-c(1,2,3)] = df.res[,-c(1,2,3)]/df.res[,1]
 
 write.csv(df.res, file = "./processedData/pairwise-differences/genus-pairwise-DERIVATIVE-high-abundant.csv", row.names = FALSE, quote = FALSE)
