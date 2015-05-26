@@ -30,7 +30,14 @@ pairwise.abs.diff = function(df, desired.key = TRUE){
   }
   indx = as.data.frame(combn(c(1:nrow(df)), 2))
   take.diff = function(x){
-    row.diff = as.data.frame(df[x[1], ] - df[x[2],])
+    row.diff.temp = df[x[1], ] - df[x[2],]
+    if (class(row.diff.temp) == "difftime"){
+      row.diff = as.data.frame(as.numeric(row.diff.temp))
+    }
+    else{
+
+      row.diff = as.data.frame(row.diff.temp)
+    }
     row.names(row.diff) = paste(x[1], "-", x[2])
     return(row.diff)
   }
@@ -43,9 +50,7 @@ pairwise.abs.diff = function(df, desired.key = TRUE){
 df.pairs = as.data.frame(pairwise.abs.diff(df[,-which(names(df) %in% "date")]))
 df.pairs$row.key = row.names(df.pairs)
 
-
-dates.in.unix = sapply(df[,which(names(df) %in% "date")], FUN = function(x) as.POSIXct(x))/100
-date.pairs = as.data.frame(pairwise.abs.diff(dates.in.unix))
+date.pairs = as.data.frame(pairwise.abs.diff(df$date))
 names(date.pairs) = "date.difference"
 date.pairs$row.key = row.names(date.pairs)
 
