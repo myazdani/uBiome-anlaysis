@@ -1,5 +1,4 @@
 # uBiome-anlaysis
-Analysis of uBiome data from subject LS using R and Ayasdi tools 
 
 Analysis of uBiome microbiome data provided by Larry Smarr (http://lsmarr.calit2.net). Raw JSON and Excel files are provided in the data/ folder. 
 
